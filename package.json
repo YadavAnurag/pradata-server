@@ -1,0 +1,29 @@
+{
+  "name": "pradata-server",
+  "version": "1.0.0",
+  "description": "Pradata Server",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YadavAnurag/pradata-server.git"
+  },
+  "keywords": [
+    "pradata",
+    "epradata"
+  ],
+  "author": "Anurag Yadav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YadavAnurag/pradata-server/issues"
+  },
+  "homepage": "https://github.com/YadavAnurag/pradata-server#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.5"
+  }
+}
