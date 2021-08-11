@@ -7,11 +7,11 @@ const appMiddleware = require("./middleware/appMiddleware");
 // config.dbURI is different depending on NODE_ENV
 const dbURI = config.dbURI;
 const mongoose = require("mongoose");
-// mongoose.connect(dbURI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   // useCreateIndex: true,
-// });
+mongoose.connect(dbURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+});
 
 //database seeding
 if (config.seedDatabase) {

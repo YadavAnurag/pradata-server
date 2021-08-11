@@ -11,4 +11,6 @@ router
   .patch(controller.patchOne)
   .delete(controller.deleteOne);
 
+router.route("*").all(controller.notPermitted);
+
 module.exports = router;
