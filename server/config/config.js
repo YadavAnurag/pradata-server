@@ -1,7 +1,9 @@
+require("dotenv").config();
+
 const devConfig = {
   devConfig: true,
-  port: process.env.port || 6001,
-  dbURI: "mongodb://127.0.0.1/pradata",
+  port: process.env.port || process.env.DEV_PORT,
+  dbURI: process.env.DEV_DB_URI,
 };
 
 const prodConfig = {
