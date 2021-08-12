@@ -30,9 +30,12 @@ exports.getList = (req, res, next) => {
   User.find({})
     .exec()
     .then((users) => users.map((user) => hideUserSensitiveDetails(user)))
-    .then((users) => res.status(202).json(users))
+    .then((users) => res.status(202).json({ error: null, users }))
     .catch((err) => {
-      res.json({ msg: "", error: err });
+      res.json({
+        msg: "Failed while fetching users from database",
+        error: err,
+      });
       return next(err);
     });
 };

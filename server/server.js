@@ -18,7 +18,6 @@ if (config.seedDatabase) {
   require("./util/generator");
 }
 
-appMiddleware(app);
 app.use("/api", api);
 
 app.use((err, req, res) => {
