@@ -1,29 +1,26 @@
 const express = require("express");
 const app = express();
 const api = require("./api/api");
-const config = require("./config/config");
 const appMiddleware = require("./middleware/appMiddleware");
+const config = require("./config/config");
+const connectDatabase = require("./connection/dbConnection");
 
 // config.dbURI is different depending on NODE_ENV
-const dbURI = config.dbURI;
-const mongoose = require("mongoose");
-mongoose.connect(dbURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-});
-
+if (config.isDBConnectionNeeded) {
+  connectDatabase(config.dbURL);
+}
 //database seeding
 if (config.seedDatabase) {
-  require("./util/generator");
+  // seed database with fixtures
 }
 
+// middleware
+appMiddleware(app);
+
+// api endpoint
 app.use("/api", api);
 
-app.use((err, req, res) => {
-  if (err) {
-    console.log(err.stack);
-  }
-});
+// bad request
+app.use("*", (req, res) => res.json({ error: "Not Permitted...!" }));
 
 module.exports = app;

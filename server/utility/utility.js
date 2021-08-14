@@ -43,7 +43,30 @@ const doEveryUsageContainsAtLeastOnePaymentDetail = (usages) => {
   return isGood;
 };
 
+const getUserPatchDetails = (user) => {
+  const {
+    firstName,
+    middleName,
+    lastName,
+    emailId,
+    contactNumber,
+    address,
+    status,
+  } = user;
+
+  return {
+    firstName,
+    middleName,
+    lastName,
+    emailId,
+    contactNumber,
+    address,
+    status,
+  };
+};
+
 module.exports = {
   hideUserSensitiveDetails,
+  getUserPatchDetails,
   doEveryUsageContainsAtLeastOnePaymentDetail,
 };

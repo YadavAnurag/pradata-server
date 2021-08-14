@@ -3,13 +3,13 @@ require("dotenv").config();
 const devConfig = {
   devConfig: true,
   port: process.env.port || process.env.DEV_PORT,
-  dbURI: process.env.DEV_DB_URI,
+  dbURL: process.env.DEV_DB_URI,
 };
 
 const prodConfig = {
   prodConfig: false,
   port: process.env.port || 6001,
-  dbURI: "http://anyOnlineDBURI",
+  dbURL: "http://anyOnlineDBURI",
 };
 
 let config = {};
@@ -22,5 +22,8 @@ if (devConfig.devConfig) {
 
 // set seedDatabase true of false
 config.seedDatabase = false;
+
+// isDBConnectionNeeded
+config.isDBConnectionNeeded = true;
 
 module.exports = config;
