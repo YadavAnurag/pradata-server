@@ -2,7 +2,7 @@ const User = require("./userModel");
 const {
   hideUserSensitiveDetails,
   getUserPatchDetails,
-  doEveryUsageContainsAtLeastOnePaymentDetail,
+  // doEveryUsageContainsAtLeastOnePaymentDetail,
 } = require("../../utility/utility");
 
 exports.params = (req, res, next, id) => {
@@ -57,7 +57,7 @@ exports.post = (req, res, next) => {
   } else {
     // user doesn't contain any usages property
     res.json({ msg: "", error: "User must contain empty usages property" });
-    return next(err);
+    return;
   }
 
   const newUser = new User(user);
