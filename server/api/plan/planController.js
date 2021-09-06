@@ -38,19 +38,58 @@ exports.getList = (req, res, next) => {
 };
 
 exports.post = (req, res) => {
-  const plan = req.body;
-  const newPlan = new Plan(plan);
-  newPlan.save((err, saved) => {
-    if (err) {
-      res.json({ msg: "got error while saving to database", error: err });
+  const requestedPlan = req.body;
+  let responseJSON = {
+    error: null,
+    status: 202,
+  };
+
+  // check if plan.id already exists
+  Plan.findOne({ id: requestedPlan.id })
+    .exec()
+    .then((plan) => {
+      if (plan) {
+        // a plan with id already exists
+        responseJSON = {
+          status: 302,
+          error: `a plan with id - ${plan.id} already exists`,
+          msg: `a plan with id - ${plan.id} already exists`,
+        };
+        res.status(responseJSON.status).json(responseJSON);
+        return;
+      } else {
+        // no plan with provided id, insert the document
+        const newPlan = new Plan(requestedPlan);
+        newPlan.save((err, saved) => {
+          if (err) {
+            responseJSON = {
+              status: 302,
+              error: err,
+              msg: "got error while saving to database",
+            };
+            res.status(responseJSON.status).json(responseJSON);
+            return;
+          } else {
+            responseJSON = {
+              error: null,
+              status: 202,
+              plan: hidePlanSensitiveDetails(saved),
+            };
+            res.status(responseJSON.status).json(responseJSON);
+            return;
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      responseJSON = {
+        error: err,
+        status: 503,
+        msg: "db server error while finding existing id",
+      };
+      res.status(responseJSON.status).json(responseJSON);
       return;
-    } else {
-      res.status(202).json({
-        error: null,
-        plan: hidePlanSensitiveDetails(saved),
-      });
-    }
-  });
+    });
 };
 
 exports.getOne = (req, res) => {
@@ -78,7 +117,7 @@ exports.patchOne = (req, res, next) => {
 
 exports.deleteOne = (req, res) => {
   req.plan.remove((err, removed) => {
-    const responseJSON = { error: null, msg: "" };
+    const responseJSON = { error: null };
 
     if (err) {
       responseJSON.error = error;

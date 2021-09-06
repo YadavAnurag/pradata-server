@@ -38,7 +38,7 @@ const statusValidation = {
     values: ["active", "inactive"],
   },
   required: true,
-  default: "active",
+  default: "inactive",
 };
 const isAdminValidation = {
   type: Boolean,
