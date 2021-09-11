@@ -1,5 +1,8 @@
 const Plan = require("./planModel");
-const { hidePlanSensitiveDetails } = require("../../utility/utility");
+const {
+  hidePlanSensitiveDetails,
+  getErrors,
+} = require("../../utility/utility");
 
 exports.params = (req, res, next, id) => {
   // console.log("Searching, id", id);
@@ -64,7 +67,7 @@ exports.post = (req, res) => {
           if (err) {
             responseJSON = {
               status: 302,
-              error: err,
+              error: getErrors(err),
               msg: "got error while saving to database",
             };
             res.status(responseJSON.status).json(responseJSON);

@@ -84,6 +84,46 @@ const hidePlanSensitiveDetails = (plan) => {
   return { id, title, price, status, description, validityPeriod, createdAt };
 };
 
+// getErrors
+const getErrors = (error) => {
+  let errorArray = [];
+
+  if (error) {
+    if (error.errors["id"]) {
+      console.log(error.errors["id"].message);
+      errorArray.push(error.errors["id"].message);
+    }
+    if (error.errors["title"]) {
+      console.log(error.errors["title"].message);
+      errorArray.push(error.errors["title"].message);
+    }
+    if (error.errors["price"]) {
+      console.log(error.errors["price"].message);
+      errorArray.push(error.errors["price"].message);
+    }
+    if (error.errors["status"]) {
+      console.log(error.errors["status"].message);
+      errorArray.push(error.errors["status"].message);
+    }
+    if (error.errors["description"]) {
+      console.log(error.errors["description"].message);
+      errorArray.push(error.errors["description"].message);
+    }
+    if (error.errors["validityPeriod"]) {
+      console.log(error.errors["validityPeriod"].message);
+      errorArray.push(error.errors["validityPeriod"].message);
+    }
+    if (error.errors["createdAt"]) {
+      console.log(error.errors["createdAt"].message);
+      errorArray.push(error.errors["createdAt"].message);
+    }
+  } else {
+    // console.log('No Errors');
+  }
+
+  return errorArray;
+};
+
 module.exports = {
   hideUserSensitiveDetails,
   getUserUsage,
@@ -91,4 +131,6 @@ module.exports = {
   doEveryUsageContainsAtLeastOnePaymentDetail,
 
   hidePlanSensitiveDetails,
+
+  getErrors,
 };
