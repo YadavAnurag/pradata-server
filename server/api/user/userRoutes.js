@@ -11,6 +11,8 @@ router
   .patch(controller.patchOne)
   .delete(controller.deleteOne);
 
+router.route("/dashboard/:id").get(controller.getDashboardData);
+
 router.route("*").all(controller.notPermitted);
 
 module.exports = router;

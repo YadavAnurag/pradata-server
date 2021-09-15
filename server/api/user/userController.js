@@ -1,8 +1,13 @@
 const User = require("./userModel");
+const Plan = require("../plan/planModel");
+
 const {
   hideUserSensitiveDetails,
   getUserPatchDetails,
   // doEveryUsageContainsAtLeastOnePaymentDetail,
+
+  getAdminDashboardData,
+  getUserDashboardData,
 } = require("../../utility/utility");
 
 exports.params = (req, res, next, id) => {
@@ -121,6 +126,34 @@ exports.deleteOne = (req, res) => {
     res.json(responseJSON);
     return;
   });
+};
+
+// TODO
+// getDashboardInfo
+exports.getDashboardData = async (req, res) => {
+  let dashboardData = {};
+
+  // check if requested user is admin or not
+  if (req.user.isAdmin && req.user.id.startsWith("xyz")) {
+    try {
+      dashboardData = await getAdminDashboardData(User, Plan);
+    } catch (err) {
+      res.json({ error: err, msg: "1. got error while fetching data from db" });
+      console.log(err);
+      return err;
+    }
+  } else {
+    try {
+      dashboardData = await getUserDashboardData(User, Plan);
+    } catch (err) {
+      res.json({ error: err, msg: "2. got error while fetching data from db" });
+      console.log(err);
+      return err;
+    }
+  }
+
+  console.log(dashboardData);
+  res.json(dashboardData);
 };
 
 exports.notPermitted = (req, res) => {
