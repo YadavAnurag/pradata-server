@@ -144,7 +144,8 @@ exports.getDashboardData = async (req, res) => {
     }
   } else {
     try {
-      dashboardData = await getUserDashboardData(User, Plan);
+      const userId = req.user.id;
+      dashboardData = await getUserDashboardData(userId, User, Plan);
     } catch (err) {
       res.json({ error: err, msg: "2. got error while fetching data from db" });
       console.log(err);
@@ -157,5 +158,5 @@ exports.getDashboardData = async (req, res) => {
 };
 
 exports.notPermitted = (req, res) => {
-  res.json({ msg: "", error: "Not Permitted...!!" });
+  res.json({ msg: "", error: "API Endpoint Not Permitted...!!" });
 };

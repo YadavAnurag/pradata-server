@@ -63,7 +63,7 @@ const usageValidation = [
         paymentMethod: {
           type: Schema.Types.String,
           enum: {
-            values: ["online", "cash"],
+            values: ["digital", "cash"],
             message: "{VALUE} is not supported",
           },
           required: true,

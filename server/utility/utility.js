@@ -128,6 +128,7 @@ const getErrors = (error) => {
 
 // getDueDataForSingleUser
 const getDueDataForSingleUser = async (usages, plans) => {
+  console.log("getDueDataForSingleUser, init, usages", usages);
   const dueDataForSingleUser = usages
     .slice(usages.length > 12 ? -12 : 0)
     .map((usage, index) => {
@@ -135,18 +136,19 @@ const getDueDataForSingleUser = async (usages, plans) => {
       /*  
         dueDataForSingleUser = {
           isPlanActive: false,
+          plan: {}
           isDueDatePassed: false,
-          isDueDateWithInAMonthForLastUsage
+          isDueDateWithInAMonth,
           totalDue: 0
         }
       */
 
       // default
       const paymentDetails = usage.paymentDetails ? usage.paymentDetails : [];
-      const planId = usage.planId ? usage.planId : "noPlanId";
+      const planId = usage.planId ? usage.planId : "";
       const planStartedAt = usage.startedAt ? usage.startedAt : 0;
 
-      // check if any plan
+      // check if no plans, then reject Promise and later Promise.all will reject the whole map Promise
       if (!plans.length) {
         console.log("Error: There is no plans in DB");
         reject({
@@ -156,7 +158,7 @@ const getDueDataForSingleUser = async (usages, plans) => {
 
       // find plan for the usage.planId
       const plan =
-        planId === "noPlanId" ? {} : plans.find((plan) => plan.id === planId);
+        planId === "" ? {} : plans.find((plan) => plan.id === planId);
       const planPrice = plan.price;
       const planValidityPeriod = plan.validityPeriod;
       const planDueDate = planStartedAt + planValidityPeriod;
@@ -164,10 +166,10 @@ const getDueDataForSingleUser = async (usages, plans) => {
 
       // isDueDateWithInAMonth
       let isDueDateWithInAMonth;
-      if (index === usages.length - 1 && planId !== "noPlanId") {
+      if (index === usages.length - 1 && planId !== "") {
         const withInAMonth = moment().add(30, "days").valueOf();
         console.log(
-          "isDueDateWithInAMonth",
+          "2222222222----isDueDateWithInAMonth",
           moment(planDueDate).format(),
           moment(withInAMonth).format()
         );
@@ -179,41 +181,45 @@ const getDueDataForSingleUser = async (usages, plans) => {
       if (!paymentDetails.length) {
         console.log("no payment received");
         return {
-          isPlanActive: planId === "noPlanId" ? false : true,
+          isPlanActive: planId === "" ? false : true,
           isDueDatePassed: todaysDate > planDueDate,
           isDueDateWithInAMonth,
           totalDue: planPrice,
+          plan: Object.keys(plan).length ? plan : {},
         };
       }
 
-      // yes payment received, calculate total payment received
+      // else payment received, calculate total payment received
       const totalPaymentReceived = usage.paymentDetails.reduce(
         (totalPaidAmount, paymentDetail) =>
           totalPaidAmount + paymentDetail.paidAmount,
         0
       );
 
-      if (index === user.usages.length - 1) {
-        dueDatePassed;
-      } else {
-        return false;
-      }
+      // // check if this is last usage
+      // if (index === usages.length - 1) {
+      //   dueDatePassed;
+      // } else {
+      //   return false;
+      // }
 
       console.log(
         "getDueDataForSingleUser - gonna return dueDataArrayForSingleUserForLastOneYear ",
         {
-          isPlanActive: planId === "noPlanId" ? false : true,
+          isPlanActive: planId === "" ? false : true,
           isDueDatePassed: todaysDate > planDueDate,
           isDueDateWithInAMonth,
           totalDue: planPrice - totalPaymentReceived,
+          plan: Object.keys(plan).length ? plan : {},
         }
       );
 
       return {
-        isPlanActive: planId === "noPlanId" ? false : true,
+        isPlanActive: planId === "" ? false : true,
         isDueDatePassed: todaysDate > planDueDate,
         isDueDateWithInAMonth,
         totalDue: planPrice - totalPaymentReceived,
+        plan: Object.keys(plan).length ? plan : {},
       };
     });
 
@@ -436,45 +442,80 @@ const getAdminDashboardData = async (UserModel, PlanModel) => {
 
   return getUsersCount(users, plans)
     .then((usersCount) => {
-      console.log("getAdminDashboardData - usersCount", usersCount);
+      // console.log("getAdminDashboardData - usersCount", usersCount);
       const numberOfInactiveUsers =
         users.length - usersCount.numberOfActiveUsers;
       const totalUsers = users.length;
 
+      // return dashboard data
       return {
         ...usersCount,
         numberOfInactiveUsers,
         totalUsers,
       };
     })
-    .then((dashboardData) => {
-      return dashboardData;
-    })
     .catch((err) => {
       console.log("getAdminDashboardData - catch", err);
     });
 };
 
+const getCurrentAccountDetails = async (user, plans) => {
+  let currentDueData = {
+    isPlanActive: false,
+    isDueDatePassed: false,
+    isDueDateWithInAMonth: false,
+    totalDue: 0,
+    plan: {},
+  };
+
+  const usages = user.usages ? user.usages : [];
+
+  console.log("getCurrentAccountDetails, usages", usages);
+  if (!usages.length) {
+    // default is already assigned, do nothing
+    console.log("There is no usages");
+    return currentDueData;
+  } else {
+    // get user due data
+    try {
+      currentDueData = await getDueDataForSingleUser(usages, plans);
+    } catch (err) {
+      console.log("getCurrentAccountDetails - catch\n", err);
+      return err;
+    }
+  }
+
+  console.log("getCurrentAccountDetails, currentDueData", currentDueData);
+};
+
 // getUserDashboardData
-const getUserDashboardData = async (UserModel, PlanModel) => {
-  let dashboardData = {};
-  let users = [];
+const getUserDashboardData = async (userId, UserModel, PlanModel) => {
+  let user = {};
   let plans = [];
 
-  // total Users
-  UserModel.find({})
-    .exec()
-    .then((users) => users.map((user) => hideUserSensitiveDetails(user)))
-    .then((allUsers) => {
-      users = users.concat(allUsers);
+  // fetch data
+  try {
+    user = await UserModel.findOne({ id: userId }).exec();
+    plans = await PlanModel.find({}).exec();
+  } catch (err) {
+    console.log("getUserDashboardData - catch\n", err);
+    return err;
+  }
+
+  return getCurrentAccountDetails(user, plans)
+    .then((currentAccountDetails) => {
+      console.log(
+        "getUserDashboardData - currentAccountDetails",
+        currentAccountDetails
+      );
+
+      return {
+        currentAccountDetails: "currentAccountDetails",
+      };
     })
     .catch((err) => {
-      return {
-        error: err,
-      };
+      console.log("getUserDashboardData - catch", err);
     });
-
-  console.log(users, plans);
 };
 
 module.exports = {

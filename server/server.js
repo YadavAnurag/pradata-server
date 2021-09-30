@@ -21,6 +21,8 @@ appMiddleware(app);
 app.use("/api", api);
 
 // bad request
-app.use("*", (req, res) => res.json({ error: "Not Permitted...!" }));
+app.use("*", (req, res) =>
+  res.json({ error: "API Endpoint Not Permitted...!" })
+);
 
 module.exports = app;

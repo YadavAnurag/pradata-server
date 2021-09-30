@@ -1,7 +1,12 @@
 const router = require("express").Router();
 const controller = require("./usage.Controller");
 
-router.route("/usages").post(controller.post);
+router.param("id", controller.params);
+
+router
+  .route("/usages/:id")
+  .post(controller.addUsage)
+  .put(controller.addPayment);
 
 router.route("*").all(controller.notPermitted);
 

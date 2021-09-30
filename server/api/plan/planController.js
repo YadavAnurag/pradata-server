@@ -135,5 +135,5 @@ exports.deleteOne = (req, res) => {
 };
 
 exports.notPermitted = (req, res) => {
-  res.json({ msg: "not allowed", error: "endpoint not permitted...!!" });
+  res.json({ msg: "not allowed", error: "API Endpoint not permitted...!!" });
 };
