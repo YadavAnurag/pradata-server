@@ -1,4 +1,6 @@
 const router = require("express").Router();
+
+const authRoutes = require("./auth/auth.Routes");
 const errorRoutes = require("./error/error.Routes");
 const planRoutes = require("./plan/planRoutes");
 const usageRoutes = require("./usage/usage.Routes");
@@ -15,6 +17,7 @@ router.use(function (req, res, next) {
   next();
 });
 
+router.use("/auth-management", authRoutes);
 router.use("/plan-management", planRoutes);
 router.use("/user-management", userRoutes);
 router.use("/usage-management", usageRoutes);

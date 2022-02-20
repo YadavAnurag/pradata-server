@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+//const { generateRandomPassword } = require("../../utility/utility");
+
 const firstNameValidation = {
   type: String,
   lowercase: true,
@@ -42,7 +44,7 @@ const statusValidation = {
 };
 const isAdminValidation = {
   type: Boolean,
-  required: true,
+  default: false,
 };
 const dateValidation = {
   type: Schema.Types.Number,
@@ -79,6 +81,19 @@ const usageValidation = [
   },
 ];
 
+const authValidation = {
+  isAdmin: isAdminValidation,
+  password: {
+    type: String,
+    required: true,
+    default: "Digi#123",
+  },
+  //secretCode: {
+  //  type: String,
+  //  default: "",
+  //},
+};
+
 const UserSchema = new Schema({
   id: { type: String, unique: true, required: true },
   firstName: firstNameValidation,
@@ -88,7 +103,8 @@ const UserSchema = new Schema({
   contactNumber: contactNumberValidation,
   address: addressValidation,
   status: statusValidation,
-  isAdmin: isAdminValidation,
+
+  auth: authValidation,
 
   usages: usageValidation,
   createdAt: dateValidation,

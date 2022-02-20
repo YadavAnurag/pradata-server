@@ -11,11 +11,11 @@ const {
 } = require("../../utility/utility");
 
 exports.params = (req, res, next, id) => {
-  // console.log("Searching, id", id);
+  console.log("Searching, id", id);
 
   User.findOne({ id })
     .then((user) => {
-      // console.log(user);
+      console.log(user);
       if (!user) {
         res
           .status(404)
@@ -134,7 +134,7 @@ exports.getDashboardData = async (req, res) => {
   let dashboardData = {};
 
   // check if requested user is admin or not
-  if (req.user.isAdmin && req.user.id.startsWith("xyz")) {
+  if (req.user.auth.isAdmin && req.user.id.startsWith("xyz")) {
     try {
       dashboardData = await getAdminDashboardData(User, Plan);
     } catch (err) {
