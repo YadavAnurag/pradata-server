@@ -11,8 +11,8 @@ exports.get = (req, res) => {
         return;
       } else {
         req.connect = connect;
+        console.log("sent", req.connect);
         res.json({ error: null, connect: req.connect });
-        next();
       }
     })
     .catch((err) => {
@@ -54,21 +54,6 @@ exports.patch = (req, res, next) => {
       res.status(404).json({ msg: "got error", error: err });
       return next(err);
     });
-
-  // console.log("connect", connect);
-  // console.log("connectUpdates", connectUpdates);
-  // Object.assign(connect, connectUpdates);
-  // connect.save((err, saved) => {
-  //   if (err) {
-  //     res.json({ msg: "got error while saving to database", error: err });
-  //   } else {
-  //     const responseJSON = {
-  //       error: null,
-  //       updates: saved,
-  //     };
-  //     res.status(202).json(responseJSON);
-  //   }
-  // });
 };
 
 exports.notPermitted = (req, res) => {
