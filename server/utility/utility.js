@@ -28,6 +28,7 @@ const hideUserSensitiveDetails = (user) => {
     emailId,
     firstName,
     usages,
+    auth: { isAdmin: auth["isAdmin"] },
   };
 };
 
@@ -182,6 +183,8 @@ const getDueDataForSingleUser = async (usages, plans) => {
         return {
           isPlanActive: planId === "" ? false : true,
           isDueDatePassed: todaysDate > planDueDate,
+          planDueDate: planDueDate,
+          planValidityPeriod: planValidityPeriod,
           isDueDateWithInAMonth,
           totalDue: planPrice,
           plan: Object.keys(plan).length ? plan : {},
@@ -208,6 +211,8 @@ const getDueDataForSingleUser = async (usages, plans) => {
           isPlanActive: planId === "" ? false : true,
           isDueDatePassed: todaysDate > planDueDate,
           isDueDateWithInAMonth,
+          planDueDate: planDueDate,
+          planValidityPeriod: planValidityPeriod,
           totalDue: planPrice - totalPaymentReceived,
           plan: Object.keys(plan).length ? plan : {},
         }
@@ -217,6 +222,8 @@ const getDueDataForSingleUser = async (usages, plans) => {
         isPlanActive: planId === "" ? false : true,
         isDueDatePassed: todaysDate > planDueDate,
         isDueDateWithInAMonth,
+        planDueDate: planDueDate,
+        planValidityPeriod: planValidityPeriod,
         totalDue: planPrice - totalPaymentReceived,
         plan: Object.keys(plan).length ? plan : {},
       };
@@ -463,6 +470,8 @@ const getCurrentAccountDetails = async (user, plans) => {
     isPlanActive: false,
     isDueDatePassed: false,
     isDueDateWithInAMonth: false,
+    planDueDate: undefined,
+    planValidityPeriod: undefined,
     totalDue: 0,
     plan: {},
   };
@@ -485,6 +494,7 @@ const getCurrentAccountDetails = async (user, plans) => {
   }
 
   console.log("getCurrentAccountDetails, currentDueData", currentDueData);
+  return currentDueData;
 };
 
 // getUserDashboardData
@@ -508,9 +518,7 @@ const getUserDashboardData = async (userId, UserModel, PlanModel) => {
         currentAccountDetails
       );
 
-      return {
-        currentAccountDetails: "currentAccountDetails",
-      };
+      return currentAccountDetails;
     })
     .catch((err) => {
       console.log("getUserDashboardData - catch", err);
