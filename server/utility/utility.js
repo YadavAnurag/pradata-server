@@ -28,7 +28,7 @@ const hideUserSensitiveDetails = (user) => {
     emailId,
     firstName,
     usages,
-    auth: { isAdmin: auth["isAdmin"] },
+    auth,
   };
 };
 
@@ -525,26 +525,20 @@ const getUserDashboardData = async (userId, UserModel, PlanModel) => {
     });
 };
 
-const generateRandomPassword = (passwordLength) => {
-  const capitals = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const smalls = "abcdefghijklmnopqrstuvwxyz";
-  const digits = "0123456789";
-  const specials = "!@#$%";
+const generateRandomPassword = ({
+  firstName = "",
+  middleName = "",
+  lastName = "",
+  passwordLength = 8,
+}) => {
+  const digits = "123456789";
 
-  let min = Math.ceil(1);
-  let max = Math.floor(22);
-  let random = Math.floor(Math.random() * (max - min + 1) + min);
+  const fullName = firstName + middleName + lastName;
+  const prefix = fullName.length >= 3 ? fullName.substring(0, 3) : fullName;
+  const suffix =
+    "#" + digits.substring(0, passwordLength - (1 + prefix.length));
 
-  const small = smalls.substr(random, 3);
-  const capital = capitals.charAt(Math.random() * 26);
-
-  min = Math.ceil(1);
-  max = Math.floor(10);
-  random = Math.floor(Math.random() * (max - min + 1) + min);
-  const digit = digits.substr(1, 3);
-  const special = specials.charAt(Math.random() * 5);
-
-  return capital + small + special + digit;
+  return prefix + suffix;
 };
 
 module.exports = {
@@ -560,5 +554,5 @@ module.exports = {
   getAdminDashboardData,
   getUserDashboardData,
 
-  // generateRandomPassword,
+  generateRandomPassword,
 };

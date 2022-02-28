@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-//const { generateRandomPassword } = require("../../utility/utility");
-
 const firstNameValidation = {
   type: String,
   lowercase: true,

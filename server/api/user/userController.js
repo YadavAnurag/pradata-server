@@ -8,6 +8,8 @@ const {
 
   getAdminDashboardData,
   getUserDashboardData,
+
+  generateRandomPassword,
 } = require("../../utility/utility");
 
 exports.params = (req, res, next, id) => {
@@ -46,8 +48,22 @@ exports.getList = (req, res, next) => {
     });
 };
 exports.post = (req, res, next) => {
-  const user = req.body;
+  console.log(req.body);
+  const firstName = req.body.firstName;
+  const middleName = req.body.middleName;
+  const lastName = req.body.lastName;
+
+  const password = generateRandomPassword({ firstName, middleName, lastName });
+  const auth = {
+    password: password,
+  };
+
+  const user = {
+    ...req.body,
+    auth,
+  };
   // if user contains any usages property
+
   if (user.hasOwnProperty("usages")) {
     // user contains usages property
     if (user.usages.length) {
