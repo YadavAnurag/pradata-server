@@ -4,7 +4,7 @@
   "description": "Pradata Server",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "forever index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,8 +25,12 @@
     "body-parser": "^1.19.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "forever": "^4.0.3",
     "moment": "^2.29.1",
     "mongoose": "^5.13.5",
     "uuid": "^8.3.2"
+  },
+  "engines": {
+    "node": "12.19.0"
   }
 }
