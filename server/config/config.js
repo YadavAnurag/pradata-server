@@ -1,15 +1,15 @@
 require("dotenv").config();
 
 const devConfig = {
-  devConfig: true,
+  devConfig: false,
   port: process.env.port || process.env.DEV_PORT,
   dbURL: process.env.DEV_DB_URI,
 };
 
 const prodConfig = {
-  prodConfig: false,
-  port: process.env.port || 6001,
-  dbURL: "http://anyOnlineDBURI",
+  prodConfig: true,
+  port: process.env.port || process.env.PROD_PORT,
+  dbURL: process.env.PROD_DB_URI,
 };
 
 let config = {};
